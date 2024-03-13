@@ -1,0 +1,11 @@
+[flake8]
+exclude =
+    *migrations*
+    *.git
+    */__pycache__/*
+    */__init__.py
+ignore = VNE002
+extend-immutable-calls = Depends, fastapi.Depends, fastapi.params.Depends
+max-line-length=100
+max-cognitive-complexity=8
+inline-quotes = '

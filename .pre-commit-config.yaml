@@ -1,0 +1,62 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: check-case-conflict
+    -   id: check-merge-conflict
+    -   id: double-quote-string-fixer
+    -   id: end-of-file-fixer
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        exclude: __init__.py
+        args: [ --profile, black, --filter-files ]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.1
+    hooks:
+    -   id: pyupgrade
+        args: [--py311-plus]
+
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v2.0.1
+    hooks:
+    -   id: autopep8
+        args: [--max-line-length=100, --in-place]
+
+  - repo: https://github.com/pycqa/flake8.git
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        files: ^log_service/src/
+        name: flake8-log_service
+        args: [--config, log_service/.flake8]
+        additional_dependencies: [
+          "flake8-bugbear",
+          "flake8-builtins",
+          "flake8-cognitive-complexity",
+          "flake8-commas",
+          "flake8-quotes",
+          "flake8-todo",
+          "flake8-variables-names",
+        ]
+
+  - repo: https://github.com/pycqa/flake8.git
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        files: ^main_service/src/
+        name: flake8-main_service
+        args: [--config, main_service/.flake8]
+        additional_dependencies: [
+          "flake8-bugbear",
+          "flake8-builtins",
+          "flake8-cognitive-complexity",
+          "flake8-commas",
+          "flake8-quotes",
+          "flake8-todo",
+          "flake8-variables-names",
+        ]
