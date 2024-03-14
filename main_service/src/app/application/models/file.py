@@ -1,7 +1,7 @@
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Json
+from pydantic import BaseModel, ConfigDict
 
 
 class FileIn(BaseModel):
@@ -12,4 +12,5 @@ class FileIn(BaseModel):
 class FileOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     uuid: UUID
-    data: Json
+    status: str
+    data: dict | None

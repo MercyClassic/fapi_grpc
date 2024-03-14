@@ -1,4 +1,3 @@
-import json
 import logging
 from functools import partial
 
@@ -18,7 +17,7 @@ def setup_exception_handlers(app: FastAPI):
         FileNotFound,
         partial(
             error_handler,
-            error_info='File Not Found',
+            error_info='File not found',
             status_code=404,
         ),
     )
@@ -41,13 +40,16 @@ def error_handler(
     logger.error(ex, exc_info=True)
     return JSONResponse(
         status_code=status_code,
-        content=json.dumps({'detail': error_info}),
+        content={'detail': error_info},
     )
 
 
-async def unexpected_error_log(request: Request, ex: Exception) -> JSONResponse:
+async def unexpected_error_log(
+        request: Request,
+        ex: Exception,
+) -> JSONResponse:
     logger.error(ex, exc_info=True)
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content='Something went wrong',
+        content={'detail': 'Something went wrong'},
     )

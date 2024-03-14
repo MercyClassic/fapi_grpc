@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 class UoW:
     def __init__(self, session: AsyncSession):
-        self._session = session
+        self.session = session
 
     async def commit(self) -> None:
-        await self._session.commit()
+        await self.session.commit()
 
     async def rollback(self) -> None:
-        await self._session.rollback()
+        await self.session.rollback()
