@@ -15,8 +15,7 @@ def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(Exception, unexpected_error_log)
     app.add_exception_handler(
         FileNotFound,
-        partial(
-            error_handler,
+        get_error_handler(
             error_info='File not found',
             status_code=404,
         ),

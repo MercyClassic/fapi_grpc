@@ -11,6 +11,7 @@ class Base(DeclarativeBase):
 def create_async_session_maker(database_url: str):
     engine = create_async_engine(
         database_url,
+        isolation_level='REPEATABLE READ',
     )
     return async_sessionmaker(
         engine,
