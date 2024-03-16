@@ -1,13 +1,12 @@
 from uuid import UUID
 
-from sqlalchemy import insert, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.domain.models.file import FileEntity
 from app.infrastructure.database.interfaces.repositories.file import (
     FileRepositoryInterface,
 )
 from app.infrastructure.database.models.file import File
+from sqlalchemy import insert, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class FileRepository(FileRepositoryInterface):
@@ -22,7 +21,7 @@ class FileRepository(FileRepositoryInterface):
             return self._serialize_file(result)
 
     async def save_file(self, file: FileEntity) -> None:
-        stmt = insert(File).values(status='in_process').returning(File)
+        stmt = insert(File).values(uuid=file.uuid, status='in_process').returning(File)
         result = await self._session.execute(stmt)
         file.uuid = result.scalar().uuid
 
@@ -30,12 +29,12 @@ class FileRepository(FileRepositoryInterface):
             self,
             file: FileEntity,
     ) -> None:
-        stmt = update(File).values(status=file.status).where(file_uuid=file.uuid)
+        stmt = update(File).values(status=file.status).where(File.uuid == file.uuid)
         await self._session.execute(stmt)
 
     def _serialize_file(self, file: File) -> FileEntity:
         return FileEntity(
             uuid=file.uuid,
-            status=file.status,
+            status=file.status.value,
             data=None,
         )

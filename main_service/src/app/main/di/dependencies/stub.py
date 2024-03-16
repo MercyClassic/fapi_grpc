@@ -25,7 +25,3 @@ class Stub:
             *self._kwargs.items(),
         )
         return hash(serial)
-
-
-async def get_session_stub():
-    raise NotImplementedError

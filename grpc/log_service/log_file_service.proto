@@ -1,0 +1,21 @@
+syntax = "proto3";
+package com.example.grpc;
+
+message GetFileRequest {
+    string file_uuid = 1;
+}
+
+message CreateFileRequest {
+    string file_uuid = 1;
+    map<string, string> data = 2;
+}
+
+message Response {
+    string file_uuid = 1;
+    map<string, string> data = 2;
+}
+
+service LogFileService {
+    rpc getFile(GetFileRequest) returns (Response);
+    rpc createFile(CreateFileRequest) returns (Response);
+}

@@ -1,10 +1,12 @@
+import asyncio
 import logging
 
-from fastapi import FastAPI
+from app.application.grpc import log_file_service_pb2_grpc
+from app.main.di.provider import DependencyProvider
+from app.main.server import LogFileServicer
+from dishka import make_async_container
 
-from app.main.di.dependencies.init_dependencies import init_dependencies
-from app.main.exceptions.setup_exception_handlers import setup_exception_handlers
-from app.presentators.api.root_router import root_router
+from grpc import aio
 
 logging.basicConfig(
     level=logging.INFO,
@@ -14,12 +16,18 @@ logging.basicConfig(
 )
 
 
-def create_app() -> FastAPI:
-    app = FastAPI()
-    setup_exception_handlers(app)
-    init_dependencies(app)
-    app.include_router(root_router)
-    return app
+async def main() -> None:
+    provider = DependencyProvider()
+    container = make_async_container(provider)
+
+    server = aio.server()
+    log_file_servicer = LogFileServicer(container=container)
+    log_file_service_pb2_grpc.add_LogFileServiceServicer_to_server(log_file_servicer, server)
+    server.add_insecure_port('0.0.0.0:8001')
+    await server.start()
+    await server.wait_for_termination()
+    await container.close()
 
 
-app = create_app()
+if __name__ == '__main__':
+    asyncio.run(main())

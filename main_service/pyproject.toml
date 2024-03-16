@@ -26,6 +26,7 @@ alembic = "^1.12.1"
 asyncpg = "^0.28.0"
 gunicorn = "^21.2.0"
 uvicorn = "^0.23.2"
+grpcio-tools = "^1.62.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.1.0"

@@ -4,6 +4,7 @@ exclude =
     *.git
     */__pycache__/*
     */__init__.py
+    *grpc*
 ignore = VNE002
 extend-immutable-calls = Depends, fastapi.Depends, fastapi.params.Depends
 max-line-length=100

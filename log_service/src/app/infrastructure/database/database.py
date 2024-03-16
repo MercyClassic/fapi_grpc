@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator
+from typing import Iterable
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from odmantic import AIOEngine
@@ -11,6 +11,6 @@ def create_engine(db_uri: str, db_name: str) -> AIOEngine:
     return engine
 
 
-async def get_session(engine: AIOEngine) -> AsyncGenerator[AIOSession, None]:
+async def get_session(engine: AIOEngine) -> Iterable[AIOSession]:
     async with engine.session() as session:
         yield session
