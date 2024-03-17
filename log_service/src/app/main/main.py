@@ -2,8 +2,8 @@ import asyncio
 import logging
 
 from app.application.grpc import log_file_service_pb2_grpc
-from app.main.di.provider import DependencyProvider
-from app.main.server import LogFileServicer
+from app.application.grpc.log_file_servicer import LogFileServicer
+from app.main.di.providers import DependencyProvider
 from dishka import make_async_container
 
 from grpc import aio

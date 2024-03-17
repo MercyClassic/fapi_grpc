@@ -1,6 +1,7 @@
 import os
 from typing import AsyncGenerator
 
+from aiokafka import AIOKafkaProducer
 from app.application.interfaces.services.file import FileServiceInterface
 from app.application.services.file import FileService
 from app.infrastructure.database.database import create_engine
@@ -15,6 +16,17 @@ from odmantic.session import AIOSession
 
 class DependencyProvider(Provider):
     scope = Scope.REQUEST
+
+    @provide(scope=Scope.APP)
+    async def get_bus_producer(self) -> AsyncGenerator[AIOKafkaProducer, None]:
+        producer = AIOKafkaProducer(
+            bootstrap_servers=os.environ['KAFKA_BOOTSTRAP_SERVER'],
+        )
+        await producer.start()
+        try:
+            yield producer
+        finally:
+            await producer.stop()
 
     @provide(scope=Scope.APP)
     def get_engine(self) -> AIOEngine:
@@ -40,5 +52,6 @@ class DependencyProvider(Provider):
     def get_file_service(
             self,
             file_repo: FileRepositoryInterface,
+            bus_producer: AIOKafkaProducer,
     ) -> FileServiceInterface:
-        return FileService(file_repo=file_repo)
+        return FileService(file_repo=file_repo, bus_producer=bus_producer)

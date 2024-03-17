@@ -14,6 +14,6 @@ class FileServiceInterface(Protocol):
     async def create_file(
             self,
             file_uuid: UUID,
-            data: dict[str, str | int],
+            data: dict[str, str | int | dict],
     ) -> FileEntity:
         raise NotImplementedError

@@ -1,11 +1,10 @@
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends
-
 from app.application.interfaces.services.file import FileServiceInterface
 from app.application.models.file import FileIn, FileOut
 from app.main.di.dependencies.stub import Stub
+from fastapi import APIRouter, Body, Depends
 
 router = APIRouter(
     tags=['core'],
@@ -20,6 +19,18 @@ router = APIRouter(
         },
     },
 )
+
+
+@router.get(
+    '/files',
+    response_model=list[FileOut],
+    status_code=200,
+)
+async def get_all_files(
+        file_service: Annotated[FileServiceInterface, Depends(Stub(FileServiceInterface))],
+) -> Any:
+    file = await file_service.get_all_files()
+    return file
 
 
 @router.get(

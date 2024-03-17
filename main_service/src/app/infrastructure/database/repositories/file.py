@@ -13,6 +13,12 @@ class FileRepository(FileRepositoryInterface):
     def __init__(self, session: AsyncSession):
         self._session = session
 
+    async def get_all_files(self) -> list[FileEntity]:
+        query = select(File)
+        result = await self._session.execute(query)
+        result = result.scalars().all()
+        return [self._serialize_file(file) for file in result]
+
     async def get_file(self, file_uuid: UUID) -> FileEntity | None:
         query = select(File).where(File.uuid == file_uuid)
         result = await self._session.execute(query)

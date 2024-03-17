@@ -22,6 +22,10 @@ class FileService(FileServiceInterface):
         self._file_repo = file_repo
         self._log_file_service = log_file_service
 
+    async def get_all_files(self) -> list[FileEntity]:
+        files = await self._file_repo.get_all_files()
+        return files
+
     async def get_file(self, file_uuid: UUID) -> FileEntity:
         file = await self._file_repo.get_file(file_uuid=file_uuid)
         if not file:
@@ -31,7 +35,7 @@ class FileService(FileServiceInterface):
             file.data = file_data
         return file
 
-    async def create_file(self, data: dict[str, str | int]) -> FileEntity:
+    async def create_file(self, data: dict[str, str | int | dict]) -> FileEntity:
         file = FileEntity(uuid=uuid4(), status='in_process', data=None)
         await self._file_repo.save_file(file=file)
         await self._log_file_service.create_file(file_uuid=file.uuid, file_data=data)

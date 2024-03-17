@@ -7,15 +7,15 @@ message GetFileRequest {
 
 message CreateFileRequest {
     string file_uuid = 1;
-    map<string, string> data = 2;
+    string data = 2;
 }
 
 message Response {
     string file_uuid = 1;
-    map<string, string> data = 2;
+    string data = 2;
 }
 
 service LogFileService {
-    rpc getFile(GetFileRequest) returns (Response);
-    rpc createFile(CreateFileRequest) returns (Response);
+    rpc get_file(GetFileRequest) returns (Response);
+    rpc create_file(CreateFileRequest) returns (Response);
 }

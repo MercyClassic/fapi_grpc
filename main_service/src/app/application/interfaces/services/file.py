@@ -7,11 +7,15 @@ from app.domain.models.file import FileEntity
 
 class FileServiceInterface(Protocol):
     @abstractmethod
+    async def get_all_files(self) -> list[FileEntity]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_file(self, file_uuid: UUID) -> FileEntity:
         raise NotImplementedError
 
     @abstractmethod
-    async def create_file(self, data: dict[str, str | int]) -> FileEntity:
+    async def create_file(self, data: dict[str, str | int | dict]) -> FileEntity:
         raise NotImplementedError
 
     @abstractmethod
