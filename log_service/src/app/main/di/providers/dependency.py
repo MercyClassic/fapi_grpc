@@ -2,6 +2,10 @@ import os
 from typing import AsyncGenerator
 
 from aiokafka import AIOKafkaProducer
+from dishka import Provider, Scope, provide
+from odmantic import AIOEngine
+from odmantic.session import AIOSession
+
 from app.application.interfaces.services.file import FileServiceInterface
 from app.application.services.file import FileService
 from app.infrastructure.database.database import create_engine
@@ -9,9 +13,6 @@ from app.infrastructure.database.interfaces.repositories.file import (
     FileRepositoryInterface,
 )
 from app.infrastructure.database.repositories.file import FileRepository
-from dishka import Provider, Scope, provide
-from odmantic import AIOEngine
-from odmantic.session import AIOSession
 
 
 class DependencyProvider(Provider):
@@ -32,7 +33,7 @@ class DependencyProvider(Provider):
     def get_engine(self) -> AIOEngine:
         engine = create_engine(
             db_uri=os.environ['mongo_db_uri'],
-            db_name=os.environ['mongo_db_name'],
+            db_name=os.environ['MONGO_DB_NAME'],
         )
         return engine
 

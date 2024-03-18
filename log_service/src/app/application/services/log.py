@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 import random
 from datetime import datetime, timedelta
@@ -16,7 +17,7 @@ def get_logger() -> logging.Logger:
         datefmt='%Y-%m-%d %H:%M:%S',
     )
     warning_formatter = logging.Formatter(
-        fmt='[{levelname}]: File[{file_uuid}] - {message}',
+        fmt='[{levelname}]: File [{file_uuid}] - {message}',
         style='{',
         datefmt='%Y-%m-%d %H:%M:%S',
     )
@@ -59,9 +60,10 @@ class LogFileService(LogFileServiceInterface):
             f'Processing file with uuid: {file.uuid}\n'
             f'UTC time: {dt}\n'
             f'Moscow time: {dt + timedelta(hours=3)}\n'
-            f'File data: {file.data}\n',
+            f'File data: {json.dumps(file.data, indent=4)}\n',
         )
-        await asyncio.sleep(random.randint(3, 7))
+        sleep_time = random.randint(7, 12)
+        await asyncio.sleep(sleep_time)
 
         status = 'success'
         keys = self.recursive_items(file.data)
@@ -78,5 +80,8 @@ class LogFileService(LogFileServiceInterface):
                 )
                 status = 'failed'
                 break
-        logger.info(f'File [{file.uuid}] process finished, status: {status}\n')
+        logger.info(
+            f'File [{file.uuid}] process finished. '
+            f'Sleep time: {sleep_time} seconds, status: {status}\n',
+        )
         await self._main_file_service.update_file(file_uuid=file.uuid, status=status)
