@@ -4,21 +4,24 @@ import os
 from datetime import datetime
 
 from aiokafka.consumer import AIOKafkaConsumer
-from app.application.interfaces.services.log import LogFileServiceInterface
+from dishka import Container, make_container
+
+from app.application.services.log import LogFileServiceInterface
 from app.domain.models.file import FileEntity
 from app.main.di.providers.log import LogServiceProvider
-from dishka import Container, make_container
 
 
 class LogConsumer:
     def __init__(
-            self,
-            container: Container,
-            bootstrap_servers: str,
+        self,
+        container: Container,
+        bootstrap_servers: str,
     ):
         self.LOGGER_TOPIC = 'logger_topic'
         self._container = container
-        self._consumer = AIOKafkaConsumer(self.LOGGER_TOPIC, bootstrap_servers=bootstrap_servers)
+        self._consumer = AIOKafkaConsumer(
+            self.LOGGER_TOPIC, bootstrap_servers=bootstrap_servers
+        )
 
     async def consume(self) -> None:
         try:

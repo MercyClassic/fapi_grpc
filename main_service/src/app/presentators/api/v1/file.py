@@ -1,10 +1,11 @@
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from app.application.interfaces.services.file import FileServiceInterface
-from app.application.models.file import FileIn, FileOut
-from app.main.di.dependencies.stub import Stub
 from fastapi import APIRouter, Body, Depends
+
+from app.application.models.file import FileIn, FileOut
+from app.application.services.file import FileServiceInterface
+from app.main.di.stub import Stub
 
 router = APIRouter(
     tags=['core'],

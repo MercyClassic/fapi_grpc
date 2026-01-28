@@ -1,10 +1,25 @@
 import json
+from abc import abstractmethod
+from typing import Protocol
 from uuid import UUID
 
-from app.application.grpc import log_file_service_pb2, log_file_service_pb2_grpc
-from app.application.interfaces.services.log_file import LogFileServiceInterface
-
 from grpc import aio
+
+from app.application.grpc import log_file_service_pb2, log_file_service_pb2_grpc
+
+
+class LogFileServiceInterface(Protocol):
+    @abstractmethod
+    async def get_file_data(self, file_uuid: UUID) -> dict[str, str | int | dict]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def create_file(
+            self,
+            file_uuid: UUID,
+            file_data: dict[str, str | int | dict],
+    ) -> dict[str, str | int | dict]:
+        raise NotImplementedError
 
 
 class LogFileService(LogFileServiceInterface):

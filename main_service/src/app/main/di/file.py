@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from app.application.interfaces.services.log_file import LogFileServiceInterface
-from app.application.services.file import FileService
-from app.infrastructure.database.interfaces.uow.uow import UoWInterface
-from app.infrastructure.database.repositories.file import FileRepository
 from fastapi import Depends
+
+from app.application.services.file import FileService
+from app.application.services.log_file import LogFileServiceInterface
+from app.infrastructure.database.repositories.file import FileRepository
+from app.infrastructure.database.uow import UoWInterface
 
 
 def get_file_service(

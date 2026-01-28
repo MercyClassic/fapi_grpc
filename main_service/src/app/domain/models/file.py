@@ -6,6 +6,6 @@ from app.domain.models.base import Entity
 
 @dataclass
 class FileEntity(Entity):
-    uuid: UUID | None
+    uuid: UUID
     status: str
-    data: dict | None
+    data: dict
