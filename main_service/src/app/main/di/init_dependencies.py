@@ -1,18 +1,19 @@
 import os
 from functools import partial
 
-from app.application.interfaces.services.file import FileServiceInterface
-from app.application.interfaces.services.log_file import LogFileServiceInterface
+from fastapi import FastAPI
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.application.services.file import FileServiceInterface
+from app.application.services.log_file import LogFileServiceInterface
 from app.infrastructure.database.database import (
     create_async_session_maker,
     get_async_session,
 )
-from app.infrastructure.database.interfaces.uow.uow import UoWInterface
-from app.main.di.dependencies.file import get_file_service
-from app.main.di.dependencies.log_file import get_log_file_service
-from app.main.di.dependencies.uow import get_uow
-from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.infrastructure.database.uow import UoWInterface
+from app.main.di.file import get_file_service
+from app.main.di.log_file import get_log_file_service
+from app.main.di.uow import get_uow
 
 
 def init_dependencies(app: FastAPI):

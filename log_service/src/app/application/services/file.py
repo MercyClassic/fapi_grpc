@@ -1,20 +1,34 @@
 import json
+from abc import abstractmethod
+from typing import Protocol
 from uuid import UUID
 
 from aiokafka import AIOKafkaProducer
-from app.application.interfaces.services.file import FileServiceInterface
+
 from app.domain.exceptions.file import FileNotFound
 from app.domain.models.file import FileEntity
-from app.infrastructure.database.interfaces.repositories.file import (
-    FileRepositoryInterface,
-)
+from app.infrastructure.database.repositories.file import FileRepositoryInterface
+
+
+class FileServiceInterface(Protocol):
+    @abstractmethod
+    async def get_file(self, file_uuid: UUID) -> FileEntity:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def create_file(
+        self,
+        file_uuid: UUID,
+        data: dict[str, str | int | dict],
+    ) -> FileEntity:
+        raise NotImplementedError
 
 
 class FileService(FileServiceInterface):
     def __init__(
-            self,
-            file_repo: FileRepositoryInterface,
-            bus_producer: AIOKafkaProducer,
+        self,
+        file_repo: FileRepositoryInterface,
+        bus_producer: AIOKafkaProducer,
     ) -> None:
         self._file_repo = file_repo
         self._bus_producer = bus_producer
@@ -26,9 +40,9 @@ class FileService(FileServiceInterface):
         return file
 
     async def create_file(
-            self,
-            file_uuid: UUID,
-            data: dict[str, str | int],
+        self,
+        file_uuid: UUID,
+        data: dict[str, str | int],
     ) -> FileEntity:
         file = FileEntity(uuid=file_uuid, data=data)
         await self._file_repo.save_file(file=file)

@@ -1,14 +1,36 @@
-from typing import Literal
+from abc import abstractmethod
+from typing import Literal, Protocol
 from uuid import UUID, uuid4
 
-from app.application.interfaces.services.file import FileServiceInterface
-from app.application.interfaces.services.log_file import LogFileServiceInterface
+from app.application.services.log_file import LogFileServiceInterface
 from app.domain.exceptions.file import FileNotFound
 from app.domain.models.file import FileEntity
 from app.infrastructure.database.interfaces.repositories.file import (
     FileRepositoryInterface,
 )
 from app.infrastructure.database.interfaces.uow.uow import UoWInterface
+
+
+class FileServiceInterface(Protocol):
+    @abstractmethod
+    async def get_all_files(self) -> list[FileEntity]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_file(self, file_uuid: UUID) -> FileEntity:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def create_file(self, data: dict[str, str | int | dict]) -> FileEntity:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_file_status(
+            self,
+            file_uuid: UUID,
+            status: Literal['failed', 'success', 'in_process'],
+    ) -> FileEntity:
+        raise NotImplementedError
 
 
 class FileService(FileServiceInterface):

@@ -2,11 +2,11 @@ import asyncio
 import json
 import logging
 import random
+from abc import abstractmethod
 from datetime import datetime, timedelta
-from typing import Iterator
+from typing import Iterator, Protocol
 
-from app.application.interfaces.services.log import LogFileServiceInterface
-from app.application.interfaces.services.main_file import MainFileServiceInterface
+from app.application.services.main_file import MainFileServiceInterface
 from app.domain.models.file import FileEntity
 
 
@@ -39,6 +39,12 @@ def get_logger() -> logging.Logger:
 
 
 logger = get_logger()
+
+
+class LogFileServiceInterface(Protocol):
+    @abstractmethod
+    async def process_logging(self, file: FileEntity, dt: datetime) -> None:
+        raise NotImplementedError
 
 
 class LogFileService(LogFileServiceInterface):

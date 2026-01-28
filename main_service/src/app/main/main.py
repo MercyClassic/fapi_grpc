@@ -1,10 +1,10 @@
 import logging
 
+from app.presentators.api.root_router import root_router
 from fastapi import FastAPI
 
-from app.main.di.dependencies.init_dependencies import init_dependencies
-from app.main.exceptions.setup_exception_handlers import setup_exception_handlers
-from app.presentators.api.root_router import root_router
+from app.main.di.init_dependencies import init_dependencies
+from app.main.setup_exception_handlers import setup_exception_handlers
 
 logging.basicConfig(
     level=logging.INFO,
