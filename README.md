@@ -1,53 +1,71 @@
-**<h2> Startup: </h2>**
-- **<h3> Create .env files in `main_service` and `log_service` </h3>**
-- **<h3> `docker compose up -d && docker logs -f log_service_consumer` </h3>**
 
-***<h3>[\*Examples after `About project` section](#examples) </h3>***
 
-**<h1> About project: </h1>**
-**<h3> In service you can create json "file" and get it data if file doesn't have forbidden keys</h3>**
-**<h3> File creation steps: </h3>**
-- **<h3> Save file in main microservice db (`postgresql`)  </h3>**
-- **<h3> `grpc` request to log microservice </h3>**
-- **<h3> Save file in log microservice db (`mongo`) </h3>**
-- **<h3> Send process request to `kafka` </h3>**
-- **<h3> Process request </h3>**
-- **<h3> Send `update file status` request by result of processing </h3>**
+# JSON Processing Microservices Example
 
-**<h3> About processing: </h3>**
-- **<h4> Logging file data, current date </h4>**
-- **<h4> Random async sleep (7-12 seconds) </h4>**
-- **<h4> Check all keys in file data: </h4>**
-- - **<h4> If any key in "error" keys, then file `status = failed` </h4>**
-- - **<h4> Otherwise file `status = success` </h4>**
+This project demonstrates a **two-microservice architecture** for processing JSON documents.
+The **Main Service** receives JSON files, sends them for processing to the **Log Service**, which logs the data and updates the file status depending on its contents.
+---
 
-**<h4> Error keys: `('error', 'forbidden')` </h4>**
-**<h4> Warning keys: `('warning', 'warn', 'deprecated')` </h4>**
+[\*Examples after `About project` section](#examples)
 
-**<h2> Log microservice provides: </h2>**
-- **<h3> Create json file (`grpc`) and send process request to `kafka` consumer</h3>**
-- **<h3> Process logging </h3>**
-- **<h3> Get json file data (`grpc`) </h3>**
+---
 
-**<h3> Log microservice stack: </h3>**
-- **<h4> Python 3.11 </h4>**
-- **<h4> grpc </h4>**
-- **<h4> AioKafka </h4>**
-- **<h4> MongoDB </h4>**
-- **<h4> Odmantic (ODM) </h4>**
+## 🏗 Project Overview
 
-**<h2> Main microservice provides: </h2>**
-- **<h3> Create json file (`grpc` request to log service) </h3>**
-- **<h3> Get all json files (uuid, status) </h3>**
-- **<h3> Get json file detail. If file doesn't have "error" keys (`status = success`) then data will be attached to this file </h3>**
-- **<h3> Update file status. It's api for `log service` </h3>**
+- **Main Service**:
+  - Receives JSON documents via HTTP.
+  - Stores documents in a PostgreSQL database.
+  - Sends documents to the Log Service for processing.
+  - Exposes endpoints to fetch all files and individual file details.
 
-**<h3> Main microservice stack: </h3>**
-- **<h4> Python 3.11 </h4>**
-- **<h4> grpc </h4>**
-- **<h4> FastAPI </h4>**
-- **<h4> PostgreSQL </h4>**
-- **<h4> SQLAlchemy </h4>**
+- **Log Service**:
+  - Receives processing requests via Kafka.
+  - Logs JSON file data with timestamps.
+  - Checks keys in the JSON document:
+    - If any **error keys** are present → `status = failed`.
+    - Otherwise → `status = success`.
+  - Updates status back in Main Service via gRPC.
+  - Stores logs in MongoDB.
+
+- **Processing Behavior**:
+  - Logs file data and timestamps.
+  - Random async sleep between 7–12 seconds to simulate processing.
+  - Recognizes **error keys** (`error`, `forbidden`) and **warning keys** (`warning`, `warn`, `deprecated`).
+
+---
+
+## ⚙️ Technology Stack
+
+**Main Service**:
+- Python 3.11
+- FastAPI
+- gRPC
+- PostgreSQL
+- SQLAlchemy
+
+**Log Service**:
+- Python 3.11
+- gRPC
+- AioKafka
+- MongoDB
+- Odmantic (ODM)
+
+**Common**:
+- Docker & Docker Compose
+- Alembic for migrations
+- Poetry for dependency management
+
+---
+
+## 🚀 Startup
+
+1. Create `.env` files in both `main_service` and `log_service`.
+2. Start services with Docker Compose:
+
+```bash
+docker compose up -d
+docker logs -f log_service_consumer
+```
 
 ## Examples:
 
